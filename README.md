@@ -1,4 +1,4 @@
-django-simple-project
+Simple Tasty Pie
 =====================
 
-simple project comes packing knockout and css reset
+a simple tasty pie project
