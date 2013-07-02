@@ -1,0 +1,142 @@
+<html>
+
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-2.1.0.js"></script>
+<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container-fluid">
+<div class="span12">
+<a class="btn" data-bind="click: deleteBags">Delete Bags</a>
+<a class="btn" data-bind="click: createBag">Create Bag</a>
+
+
+<a class="btn" data-bind="click: deleteVegetables">Delete Vegetables</a>
+<a class="btn" data-bind="click: createVegetable">Create Vegetable</a>
+
+
+<a class="btn" data-bind="click: createBagAndVegetables">Create Bag and Vegetables</a>
+<div data-bind="foreach: bags">
+<h1 data-bind="text: name"></h1>
+</div>
+
+
+<div data-bind="foreach: vegetables">
+    <h5 data-bind="text: name"></h5>
+</div>
+
+</div>
+
+
+
+
+<script>
+
+
+
+var modelPageView = {};
+
+modelPageView.bags = ko.observableArray([]);
+modelPageView.vegetables = ko.observableArray([]);
+
+
+var readBags = function(){
+    $.get("/api/bags/", {}, function(data){
+          modelPageView.bags(data.objects);
+
+    })
+};
+
+var createBag = function(){
+    $.ajax({
+            url: "/api/bags/",
+            type: "POST",
+            data: JSON.stringify({name: "bag"}),
+            contentType: "application/json",
+            }).done(function(data) {
+                readBags();
+                readVegetables();
+            });
+}
+
+var deleteBags = function(){
+    $.ajax({
+            url: "/api/bags/",
+            type: "DELETE",
+            contentType: "application/json",
+            }).done(function() {
+                readBags();
+                readVegetables();
+            });
+}
+
+var readVegetables = function(){
+    $.get("/api/vegetables/", {}, function(data){
+          modelPageView.vegetables(data.objects);
+
+    })
+};
+
+var createVegetable = function(){
+
+    if(!modelPageView.bags().length){
+        alert("you need to create a bag before you can create a resource");
+        return;
+    }
+
+    var resource = modelPageView.bags()[0].resource_uri
+    $.ajax({
+            url: "/api/vegetables/",
+            type: "POST",
+            data: JSON.stringify({name: "carrot", bag: resource}),
+            contentType: "application/json",
+            }).done(function(data) {
+                readBags();
+                readVegetables();
+            });
+}
+
+var deleteVegetables = function(){
+    $.ajax({
+            url: "/api/vegetables/",
+            type: "DELETE",
+            contentType: "application/json",
+            }).done(function() {
+                readBags();
+                readVegetables();
+            });
+}
+
+var createBagAndVegetables = function(){
+    $.ajax({
+            url: "/api/bags/",
+            type: "POST",
+            data: JSON.stringify({name: "mr bag", vegetables: [{name: "lettuce" }] }),
+            contentType: "application/json",
+            }).done(function(data) {
+                readBags();
+                readVegetables();
+            });
+
+}
+
+modelPageView.createBag = createBag;
+modelPageView.deleteBags = deleteBags;
+modelPageView.createVegetable = createVegetable;
+modelPageView.deleteVegetables = deleteVegetables;
+readBags();
+readVegetables();
+
+ko.applyBindings(modelPageView);
+
+</script>
+
+
+
+
+
+</script>
+</body>    
+</html>
