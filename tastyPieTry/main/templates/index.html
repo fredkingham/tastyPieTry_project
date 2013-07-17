@@ -111,9 +111,9 @@ var deleteVegetables = function(){
 
 var createBagAndVegetables = function(){
     $.ajax({
-            url: "/api/bags/",
+            url: "/api/vegetables/",
             type: "POST",
-            data: JSON.stringify({name: "mr bag", vegetables: [{name: "lettuce" }] }),
+            data: JSON.stringify({name: "mr bag", bag: {name: "lettuce" } }),
             contentType: "application/json",
             }).done(function(data) {
                 readBags();

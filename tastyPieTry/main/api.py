@@ -24,7 +24,7 @@ class AllowAllAuthorization(Authorization):
 
 class BagResource(ModelResource):
     # attending_status = fields.ToManyField('mainPage.api.AttendingStatusResource', 'attending_statuses', related_name = 'event')
-    vegetables = fields.ToManyField("main.api.VegetableResource", 'vegetables', related_name="bag", null=True, blank=True)
+    vegetables = fields.ToManyField("main.api.VegetableResource", 'vegetables', null=True, blank=True)
     class Meta:
         queryset = Bag.objects.all()
         resource_name = 'bags'
@@ -34,7 +34,7 @@ class BagResource(ModelResource):
 
 
 class VegetableResource(ModelResource):
-    bag = fields.ToOneField(BagResource, 'bag', related_name="vegetables")
+    bag = fields.ToOneField(BagResource, 'bag')
 
     class Meta:
         queryset = Vegetable.objects.all()
